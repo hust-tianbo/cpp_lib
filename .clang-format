@@ -1,0 +1,5 @@
+#基于哪个风格
+BasedOnStyle: Google
+
+#行长度
+ColumnLimit: 120
