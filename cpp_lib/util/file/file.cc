@@ -71,9 +71,35 @@ bool MakeDir(const std::string& path) {
   if (found != std::string::npos) {
     std::string base_dir = path_temp.substr(0, found);
     if (MakeDir(base_dir)) {
-      return mkdir(path.c_str()) == 0;
+      return mkdir(path.c_str(),
+                   S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0;
+    }
+  } else {
+    return mkdir(path.c_str(),
+                 S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0;
+  }
+  return false;
+}
+
+bool MakeFile(const std::string& path) {
+  // 如果已经存在该目录的话
+  if (IsDirExist(path) || IsFileExist(path)) {
+    return false;
+  }
+
+  std::string path_temp = path;
+  size_t found = path_temp.rfind("/");
+  if (found != std::string::npos) {
+    std::string base_dir = path.substr(0, found);
+    if (MakeDir(base_dir)) {
+      return open(path.c_str(), O_CREAT,
+                  S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+    } else {
+      return open(path.c_str(), O_CREAT,
+                  S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
     }
   }
+  return false;
 }
 
 }  // namespace cpp_lib

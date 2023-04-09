@@ -33,8 +33,8 @@ std::string StrToUpper(std::string_view str) {
 std::string RandomStr(uint32_t len) {
   static const char alphanum[] =
       "0123456789"
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  "abcdefghijklmnopqrstuvwxyz";
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      "abcdefghijklmnopqrstuvwxyz";
 
   srand(time(NULL));
   char buf[1024];
