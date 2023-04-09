@@ -13,7 +13,7 @@ std::vector<T> SplitStr(std::string_view str, std::string_view sep,
                         bool is_skip_empty = false,
                         bool is_skip_whitespace = false) {
   if (is_skip_whitespace) {
-    return absl::StrSplit(str, sep, absl::SkipWhiteSpace());
+    return absl::StrSplit(str, sep, absl::SkipWhitespace());
   } else if (is_skip_empty) {
     return absl::StrSplit(str, sep, absl::SkipEmpty());
   } else {
@@ -25,11 +25,17 @@ template <typename T = std::string>
 std::vector<T> SplitStr(std::string_view str, char sep,
                         bool is_skip_empty = false,
                         bool is_skip_whitespace = false) {
-  return SplitStr<T>(str, absl::ByChar(sep), is_skip_empty, is_skip_whitespace);
+  if (is_skip_whitespace) {
+    return absl::StrSplit(str, absl::ByChar(sep), absl::SkipWhitespace());
+  } else if (is_skip_empty) {
+    return absl::StrSplit(str, absl::ByChar(sep), absl::SkipEmpty());
+  } else {
+    return absl::StrSplit(str, absl::ByChar(sep), absl::AllowEmpty());
+  }
 }
 
 template <typename T>
-std::vector<T> SplitAndToInt(std::string_view str, std::string_view sep,
+std::vector<T> SplitAndToInt(const std::string& str, const std::string& sep,
                              bool is_skip_empty = false,
                              bool is_skip_whitespace = false) {
   std::vector<std::string> str_vec =
@@ -47,11 +53,21 @@ std::vector<T> SplitAndToInt(std::string_view str, std::string_view sep,
 }
 
 template <typename T>
-std::vector<T> SplitAndToInt(std::string_view str, char sep,
+std::vector<T> SplitAndToInt(const std::string& str, char sep,
                              bool is_skip_empty = false,
                              bool is_skip_whitespace = false) {
-  return SplitAndToInt(str, absl::ByChar(sep), is_skip_empty,
-                       is_skip_whitespace);
+  std::vector<std::string> str_vec =
+      SplitStr(str, sep, is_skip_empty, is_skip_whitespace);
+  std::vector<T> res_vec;
+  res_vec.reserve(str_vec.size());
+
+  for (auto& str : str_vec) {
+    T ele;
+    if (SimpleAtoi(str, &ele)) {
+      res_vec.emplace_back(ele);
+    }
+  }
+  return std::move(res_vec);
 }
 
 }  // namespace cpp_lib
