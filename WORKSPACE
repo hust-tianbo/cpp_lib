@@ -6,3 +6,9 @@ git_repository(
     remote = "https://github.com/abseil/abseil-cpp.git",
     tag = "20211102.0",
 )
+
+new_local_repository(
+    name = "tbb",
+    path = "/opt/intel/tbb",
+    build_file = "//third_party/tbb:tbb.BUILD",
+)
